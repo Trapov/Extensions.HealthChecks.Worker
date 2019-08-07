@@ -9,14 +9,14 @@ language: csharp
 mono: none
 jobs:
   include:
-    - if: tag IS present
-    - stage: dotnet-build-worker
-        script:
-        - sudo snap alias dotnet-sdk.dotnet dotnet
-        - dotnet build -c Release
-        - cd src/Extensions.HealthChecks.Worker && dotnet pack /p:PackageVersion=0.1.$TRAVIS_BUILD_NUMBER -c Release && cd bin/Release && dotnet nuget push Extensions.HealthChecks.Worker.0.1.$TRAVIS_BUILD_NUMBER.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json
-    - stage: dotnet-build-dependency-injection
-        script:
-        - sudo snap alias dotnet-sdk.dotnet dotnet
-        - dotnet build -c Release
-        - cd src/Extensions.HealthChecks.DependencyInjection && dotnet pack /p:PackageVersion=0.1.$TRAVIS_BUILD_NUMBER -c Release && cd bin/Release && dotnet nuget push Extensions.HealthChecks.DependencyInjection.0.1.$TRAVIS_BUILD_NUMBER.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json
+  - if: tag IS present
+  - stage: dotnet-build-worker
+    script:
+    - sudo snap alias dotnet-sdk.dotnet dotnet
+    - dotnet build -c Release
+    - cd src/Extensions.HealthChecks.Worker && dotnet pack /p:PackageVersion=0.1.$TRAVIS_BUILD_NUMBER -c Release && cd bin/Release && dotnet nuget push Extensions.HealthChecks.Worker.0.1.$TRAVIS_BUILD_NUMBER.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json
+  - stage: dotnet-build-dependency-injection
+    script:
+    - sudo snap alias dotnet-sdk.dotnet dotnet
+    - dotnet build -c Release
+    - cd src/Extensions.HealthChecks.DependencyInjection && dotnet pack /p:PackageVersion=0.1.$TRAVIS_BUILD_NUMBER -c Release && cd bin/Release && dotnet nuget push Extensions.HealthChecks.DependencyInjection.0.1.$TRAVIS_BUILD_NUMBER.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json
