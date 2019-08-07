@@ -1,12 +1,15 @@
-language: csharp
-sudo: required
 dist: xenial
+addons:
+  snaps:
+  - name: dotnet-sdk
+    classic: true
+    channel: latest/beta
+sudo: required
+language: csharp
 mono: none
-dotnet: 3.0.0
-install:
-before_script:
 script:
-- dotnet build -c Release
+  - sudo snap alias dotnet-sdk.dotnet dotnet
+  - dotnet build -c Release
 deploy:
   provider: script
   skip_cleanup: true
