@@ -1,0 +1,17 @@
+language: csharp
+sudo: required
+dist: xenial
+mono: none
+dotnet: 3.0.0
+install:
+before_script:
+script:
+- dotnet build -c Release
+deploy:
+  provider: script
+  skip_cleanup: true
+  script:
+    - cd src/Extensions.HealthChecks.Worker && dotnet pack /p:PackageVersion=0.1.$TRAVIS_BUILD_NUMBER -c Release && cd bin/Release && dotnet nuget push **/*.0.1.$TRAVIS_BUILD_NUMBER.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json
+    - cd src/Extensions.HealthChecks.DependencyInjection && dotnet pack /p:PackageVersion=0.1.$TRAVIS_BUILD_NUMBER -c Release && cd bin/Release && dotnet nuget push **/*.0.1.$TRAVIS_BUILD_NUMBER.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json
+    on:
+    branch: master
