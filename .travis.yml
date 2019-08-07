@@ -9,7 +9,7 @@ language: csharp
 mono: none
 jobs:
   include:
-    - if:tag IS present
+    - if: tag IS present
     - stage: dotnet-build-worker
         script:
         - sudo snap alias dotnet-sdk.dotnet dotnet
