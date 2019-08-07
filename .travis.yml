@@ -9,9 +9,13 @@ language: csharp
 mono: none
 jobs:
   include:
-    - stage: dotnet-build-pack-push
+    - stage: dotnet-build-worker
       script:
       - sudo snap alias dotnet-sdk.dotnet dotnet
       - dotnet build -c Release
       - cd src/Extensions.HealthChecks.Worker && dotnet pack /p:PackageVersion=0.1.$TRAVIS_BUILD_NUMBER -c Release && cd bin/Release && dotnet nuget push **/*.0.1.$TRAVIS_BUILD_NUMBER.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json
-      - cd ../../src/Extensions.HealthChecks.DependencyInjection && dotnet pack /p:PackageVersion=0.1.$TRAVIS_BUILD_NUMBER -c Release && cd bin/Release && dotnet nuget push **/*.0.1.$TRAVIS_BUILD_NUMBER.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json
+    - stage: dotnet-build-dependency-injection
+      script:
+      - sudo snap alias dotnet-sdk.dotnet dotnet
+      - dotnet build -c Release
+      - cd src/Extensions.HealthChecks.DependencyInjection && dotnet pack /p:PackageVersion=0.1.$TRAVIS_BUILD_NUMBER -c Release && cd bin/Release && dotnet nuget push **/*.0.1.$TRAVIS_BUILD_NUMBER.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json
