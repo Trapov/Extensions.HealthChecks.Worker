@@ -17,6 +17,7 @@ namespace SampleWorker
                 {
                     services
                         .AddHealthChecks()
+                        .AddMongoDb("mongodb://localhost:27017/persons")
                         .UseHealthChecksWorker(options => { });
 
                     services.AddHostedService<Worker>();

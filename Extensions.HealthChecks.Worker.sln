@@ -7,11 +7,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{18FD44FB-C75
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Extensions.HealthChecks.Worker", "src\Extensions.HealthChecks.Worker\Extensions.HealthChecks.Worker.csproj", "{52F0414A-4BD4-4820-99E0-9F5356E1219E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.HealthChecks.DependencyInjection", "src\Extensions.HealthChecks.DependencyInjection\Extensions.HealthChecks.DependencyInjection.csproj", "{5B3B5844-CEE9-4575-A36A-5C361195A72A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Extensions.HealthChecks.DependencyInjection", "src\Extensions.HealthChecks.DependencyInjection\Extensions.HealthChecks.DependencyInjection.csproj", "{5B3B5844-CEE9-4575-A36A-5C361195A72A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{2C0408A4-4B70-42D4-80D1-B9F7850286B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleWorker", "examples\SampleWorker\SampleWorker.csproj", "{20196853-16D2-4A2B-A310-E32DA5E4595B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleWorker", "examples\SampleWorker\SampleWorker.csproj", "{20196853-16D2-4A2B-A310-E32DA5E4595B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0C094F4C-96B5-4F42-B7E7-23896CF638D7}"
+	ProjectSection(SolutionItems) = preProject
+		.travis.yml = .travis.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
