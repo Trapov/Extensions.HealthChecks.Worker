@@ -39,80 +39,71 @@
             }
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public override Task StartAsync(CancellationToken cancellationToken)
         {
             try
             {
                 _httpListener.Start();
+                return ExecuteAsync(cancellationToken);
             }
             catch (HttpListenerException exc)
             {
                 if (exc.ErrorCode == 5) // access denied
                 {
                     _logger.LogCritical(
-                        "HealthcheckService didn't start because you have no administrator rights " +
+                        $"{nameof(HealthCheckService)} didn't start because you have no administrator rights " +
                         "to open a web server on the specified port. To resolve this issue you need:\n" +
                         string.Join(Environment.NewLine, _prefixes.Select(p => $"netsh http add urlacl url={p} user=[domain]\\[username]")));
-
-                    await Task.CompletedTask;
-                }
-
-                throw;
-            }
-
-            try
-            {
-                while (!stoppingToken.IsCancellationRequested)
-                {
-                    var getContext = _httpListener.GetContextAsync();
-                    getContext.Wait(stoppingToken);
-
-                    var context = getContext.Result;
-                    var request = context.Request;
-                    var response = context.Response;
-
-                    var endpoint = _options.Endpoints.FirstOrDefault(end => end.Url == request.Url.LocalPath);
-
-                    if (endpoint == null)
-                        continue;
-
-                    var checkResult = await _service.CheckHealthAsync(stoppingToken);
-
-                    var result = endpoint.Check(checkResult);
-
-                    try
-                    {
-                        var statusCode = _options.StatusCodesMapping[checkResult.Status];
-
-                        response.StatusCode = statusCode;
-                        response.ContentType = "application/json";
-
-                        using (var writer = new StreamWriter(response.OutputStream))
-                            writer.Write(result);
-                    }
-                    catch (Exception ex) when (!(ex is OperationCanceledException))
-                    {
-                        Trace.WriteLine($"Error in HealthcheckService: {ex}");
-
-                        try
-                        {
-                            response.StatusCode = 500;
-                        }
-                        catch
-                        {
-                            // ignore errors
-                        }
-                    }
-                    finally
-                    {
-                        response.Close();
-                    }
                 }
             }
-            finally
+
+            return StopAsync(cancellationToken);
+        }
+
+        public override Task StopAsync(CancellationToken cancellationToken)
+        {
+            if (_httpListener.IsListening)
             {
                 _httpListener.Stop();
-                _httpListener.Close();
+            }
+
+            _httpListener.Close();
+
+            return Task.CompletedTask;
+        }
+        
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                var context = await _httpListener.GetContextAsync();
+
+                var request = context.Request;
+                using var response = context.Response;
+
+                var endpoint = _options.Endpoints.FirstOrDefault(end => end.Url == request.Url.LocalPath);
+
+                if (endpoint == null)
+                    continue;
+
+                try
+                {
+                    var checkResult = await _service.CheckHealthAsync(stoppingToken);
+                    var result = endpoint.Check(checkResult);
+                    
+                    var statusCode = _options.StatusCodesMapping[checkResult.Status];
+
+                    response.StatusCode = statusCode;
+                    response.ContentType = "application/json";
+
+                    using (var writer = new StreamWriter(response.OutputStream))
+                        writer.Write(result);
+                }
+                catch (Exception ex) when (!(ex is OperationCanceledException))
+                {
+                    Trace.WriteLine($"Error in HealthcheckService: {ex}");
+                    response.StatusCode = 500;
+                }
             }
         }
 
